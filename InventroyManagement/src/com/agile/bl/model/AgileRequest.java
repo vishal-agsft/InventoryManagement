@@ -84,6 +84,10 @@ public class AgileRequest {
 	}
 
 	
+	public AgileRequest() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return An int which is request id
 	 */
