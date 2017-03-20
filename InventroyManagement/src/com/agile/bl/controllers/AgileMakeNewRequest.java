@@ -1,6 +1,7 @@
 package com.agile.bl.controllers;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
@@ -8,37 +9,65 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.agile.bl.dao.AgileItemDaoImplementation;
+import com.agile.bl.dao.AgileRequestDaoImplementation;
+import com.agile.bl.dao.AgileUserDaoImplementation;
+import com.agile.bl.model.AgileRequest;
 
 /**
  * Servlet implementation class AgileMakeNewRequest
  */
 @WebServlet("/newrequest")
-@SuppressWarnings("unused")
 public class AgileMakeNewRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
- 
-	
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try{
-			int userId = Integer.valueOf(request.getParameter(""));
-			int itemId = Integer.valueOf(request.getParameter(""));
-			int quantity = Integer.valueOf(request.getParameter(""));
-			
+
+	AgileRequestDaoImplementation agileReqDao = new AgileRequestDaoImplementation();
+	AgileItemDaoImplementation agileItemDao = new AgileItemDaoImplementation();
+	AgileUserDaoImplementation agileUserDao = new AgileUserDaoImplementation();
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			HttpSession httpSession = request.getSession(false);
+			String emailId = (String) httpSession.getAttribute("email");
+			String itemName = request.getParameter("itemName");
+
+			int userId = agileUserDao.getUserId(emailId);
+			int itemId = agileItemDao.getItemId(itemName);
+			System.out.println(itemName+""+itemId);
 			Timestamp requestedDate = new Timestamp(System.currentTimeMillis());
-			int currentRequestedStatus = 0;
-			
+			int currentRequestedStatus = 2;
+
 			String description = "";
-			
-			
-			
-		}catch(Exception e){
+
+			AgileRequest agileReq = new AgileRequest();
+			agileReq.setUserId(userId);
+			agileReq.setItemId(itemId);
+			agileReq.setRequestedDate(requestedDate);
+			agileReq.setRequestStatus(currentRequestedStatus);
+			agileReq.setDescription(description);
+
+			agileReqDao.addUserRequests(agileReq);
+			PrintWriter out=response.getWriter();
+			out.println("<html>");
+			out.println("<body>");
+			out.println("<h1>Requested</h1>");
+			out.println("</body>");
+			out.println("</html>");
+		/*	response.sendRedirect("agilelogin");*/
+//			RequestDispatcher dispatcher = request.getRequestDispatcher("adminpanel.jsp");
+//			dispatcher.forward(request, response);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doPost(request, response);
 	}
 
 }
