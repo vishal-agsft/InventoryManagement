@@ -49,7 +49,7 @@ public class AgileAddNewItem extends HttpServlet {
 				agileItems.setDescription(description);
 
 				agileItemImpl.addItemDetails(agileItems);
-				response.sendRedirect("adminpanel.jsp");
+				response.sendRedirect("agilelogin");
 
 			} catch (Exception e) {
 
