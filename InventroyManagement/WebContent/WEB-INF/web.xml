@@ -4,4 +4,11 @@
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
+  <context-param>
+    <param-name>HttpSession</param-name>
+    <param-value>null</param-value>
+</context-param>
+  <listener>
+        <listener-class>com.agile.bl.controllers.MyListener</listener-class>
+    </listener>
 </web-app>

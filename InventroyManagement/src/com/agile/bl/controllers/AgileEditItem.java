@@ -36,7 +36,7 @@ public class AgileEditItem extends HttpServlet {
 			agileItems.setLastModifiedDate(currentTs);
 			
 			agileItemDao.updateItemDetails(agileItems, itemName);
-			
+			System.out.println("redirecting to admin page");
 			response.sendRedirect("agilelogin");
 			
 		}catch(Exception e){

@@ -118,5 +118,26 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 
 		return "Record can not be deleted";
 	}
+	 @Override
+		public int getItemId(String itemName) {
+			String query = "SELECT itemid FROM Items WHERE itemname = ?";
+			int itemId = 0;
+			
+			try {
+				PreparedStatement ps = connection.prepareStatement(query);
+				ps.setString(1, itemName);
+				
+				ResultSet rs = ps.executeQuery();
+				
+				while(rs.next()){
+					itemId = rs.getInt("itemid");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return itemId;
+		}
 
 }

@@ -12,7 +12,7 @@
 padding:0;
 }
 #submitbtn{
-margin-right: 40%;
+margin-right: 14px;
 margin-top: 0%;
 
 }

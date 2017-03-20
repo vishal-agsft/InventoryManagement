@@ -5,7 +5,12 @@ import java.util.List;
 import com.agile.bl.model.AgileItems;
 
 public interface AgileItemDao {
-	
+	/** @param itemName
+	 * 			name of item has to be passed
+	 * @return
+	 * 			Returns the item id for the specified item name
+	 */
+	public int getItemId(String itemName);
 	/**
 	 * @param object	
 	 * 			A reference of type AgileItem has to be passed in order to add item details

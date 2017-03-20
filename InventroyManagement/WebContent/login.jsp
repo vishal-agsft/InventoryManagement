@@ -1,14 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page session="false" %>
-<%-- <%
-HttpSession httpSession =request.getSession();
-if(httpSession!=null){
-	response.sendRedirect("login.jsp");
-}
+<%@ page session="false"%>
 
-
-%> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,15 +31,24 @@ if(httpSession!=null){
 #buttondiv {
 	margin-left: 20%;
 }
+
+#loginForm .has-error .control-label, #loginForm .has-error .help-block,
+	#loginForm .has-error .form-control-feedback {
+	color: #f39c12;
+}
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+
 </head>
 <body>
-	<!-- <form action="http://192.168.50.94:8080/AgileSoftInventoryManagementSystem/agilelogin" method="post"> -->
-	<form action="agilelogin" method="post">
+
+
+	<form action="agilelogin" method="post" id="loginform">
 		<jsp:include page="Topview.jsp" />
+
 		<div class="col-lg-4 col-lg-offset-4" id="maindiv">
+
 			<div class="form-group" id="emaildiv">
 				<label for="email">Email address:</label> <input type="email"
 					required="required" class="form-control" name="email">

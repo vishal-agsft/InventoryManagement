@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,21 @@ public class AgileLogout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession httpSession = request.getSession(false);
+		/*Cookie cookie = null;
+		   Cookie[] cookies = null;
+		   // Get an array of Cookies associated with this domain
+		   cookies = request.getCookies();
+		   if( cookies != null ){
+		     
+		      for (int i = 0; i < cookies.length; i++){
+		         cookie = cookies[i];
+		         if((cookie.getName( )).compareTo("first_name") == 0 ){
+		            cookie.setMaxAge(0);
+		            response.addCookie(cookie);
+		           
+		         }
+		      }
+		   }*/
 		try {
 //			
 //			if (httpSession != null || httpSession.getAttribute("email") != null

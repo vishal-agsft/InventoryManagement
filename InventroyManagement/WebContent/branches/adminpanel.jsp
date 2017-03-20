@@ -2,30 +2,16 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
-<%@ page session="false"%>
+<%-- <%@ page session="false"%> --%>
 <%
-HttpSession httpSession =request.getSession();
-if(httpSession==null){
-	response.sendRedirect("login.jsp");
+String se;
+se=(String)session.getAttribute("isUserLoggedIn");
+
+if(se==null){
+	
+response.sendRedirect("login.jsp");
 }
-
-
-// Create cookies for first and last names.      
-Cookie mail = new Cookie("mail",
-			  request.getParameter("email"));
-Cookie pass = new Cookie("pass",
-			  request.getParameter("pwd"));
-
-// Set expiry date after 24 Hrs for both the cookies.
-mail.setMaxAge(60*60*24); 
-pass.setMaxAge(60*60*24); 
-
-// Add both the cookies in the response header.
-response.addCookie( mail );
-response.addCookie( pass );
 %>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -72,65 +58,9 @@ html {
 tr:hover {
 	background-color: #f5f5f5
 }
-#Loaderdiv{
-display: none;
-
-}
-#loader {
-display:none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  margin: -75px 0 0 -75px;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Add animation to "page content" */
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
-}
-
-@-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
-}
-
-@keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
-}
-
-#myDiv {
-  display: none;
-  text-align: center;
-}
 </style>
 <script type="text/javascript">
 	function Myconfirm(itemid, itemName, emailid, requestid) {
-		$("#loader").fadeIn("slow");
 		var i = itemid;
 		var j = itemName;
 		var k = emailid;
@@ -146,17 +76,14 @@ display:none;
 			},
 			success : function(result) {
 				console.log(result);
-				$("#loader").fadeOut();
-				/* alert("Request Approved!!") */
-				$("#ApproveDecline").modal('show');
-				//document.location.href = 'agilelogin';
+				alert("Request Approved!!")
+				document.location.href = 'agilelogin';
 				/* var successUrl = "adminpanel.jsp";
 				window.location.href = successUrl; */
 			}
 		});
 	}
 	function Mydecline(itemid, itemName, emailid, requestid) {
-		$("#loader").fadeIn("slow");
 		var i = itemid;
 		var j = itemName;
 		var k = emailid;
@@ -171,31 +98,13 @@ display:none;
 				requestid : l
 			},
 			success : function(result) {
-				$("#loader").fadeOut();
-				/* alert("Request Approved!!") */
-				$("#myDecline").modal('show');
-				/* var successUrl = "agilelogin";
-				window.location.href = successUrl; */
+				console.log(result);
+				alert("Request declined!!")
+				var successUrl = "adminpanel.jsp";
+				window.location.href = successUrl;
 			}
 		});
 	}
-	
-	$('#usermodaladd').on('shown.bs.modal', function() {
-	    $(document).off('focusin.modal');
-	});
-	
-	function validateEmail(emailField){
-        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-
-        if (reg.test(emailField.value) == false) 
-        {
-            alert('Invalid Email Address');
-            return false;
-        }
-
-        return true;
-
-}
 </script>
 <title>Admin Panel</title>
 </head>
@@ -203,16 +112,7 @@ display:none;
 
 	<jsp:include page="Topview.jsp" />
 	<jsp:include page="logout.jsp" />
-	<!-- <div class="col-lg-12 loader" id="Loaderdiv">
-	<img src="/images/Pure-CSS-loading-spiner.jpg"></img>
-	
-	</div> -->
 	<div class="container col-lg-12 col-lg-offset-4" id="MainDiv">
-	<div id="loader"></div>
-
-<div style="display:none;" id="myDiv" class="animate-bottom">
- 
-</div>
 		<h3>Inventory Management</h3>
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#inventory">Inventory</a></li>
@@ -405,10 +305,7 @@ display:none;
 												<td>${user.firstName}</td>
 												<td>${user.lastName}</td>
 												<td>${user.emailId}</td>
-											<%-- 	<td>	<button id="decline" type="button"
-														class="btn btn-danger btn-xs"
-														onclick="Mydecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
-														value="decline" name="requestbtn">Decline</button></td> --%>
+
 											</tr>
 										</c:forEach>
 									</tbody>
@@ -422,7 +319,7 @@ display:none;
 					</div>
 
 					<!--Add user Modal -->
-						<form action="insertuser" method="post">
+					<form action="insertuser" method="post">
 						<div id="usermodaladd" class="modal fade" tabindex="-1"
 							role="dialog">
 							<div class="modal-dialog modal-md">
@@ -434,7 +331,7 @@ display:none;
 										<h4 class="modal-title">Add Users</h4>
 									</div>
 									<div class="modal-body col-lg-12 col-sm-12 col-xs-12">
-									
+
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
@@ -459,35 +356,28 @@ display:none;
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Email </label>
+												class="pull-right clear-float-mobile">Email: </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="email" class="form-control"
 												style="float: right;" class="pull-left clear-float-mobile"
-												name="emailid" required="required" onblur="validateEmail(this)" />
+												name="emailid" required="required" />
 										</div>
 
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Password </label>
+												class="pull-right clear-float-mobile">Password: </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="password" class="form-control"
 												style="float: right;" class="pull-left clear-float-mobile"
 												name="password" required="required" />
 										</div>
-										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
-											<label
-												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Is Admin </label>
+										<div class="checkbox">
+											<label><input type="checkbox" value="chk"
+												checked="checked" name="admincheck">Is Admin</label>
 										</div>
-										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
-											<input type="checkbox"
-												style="float: left;" class="pull-left clear-float-mobile"
-												name="admincheck" value="chk" />
-										</div>
-										
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -496,7 +386,6 @@ display:none;
 										<button type="button" class="btn btn-danger"
 											data-dismiss="modal">Cancel</button>
 									</div>
-									
 								</div>
 							</div>
 						</div>
@@ -536,6 +425,9 @@ display:none;
 														onclick="Myconfirm('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
 														value="approve" name="requestbtn">Approve</button>
 													<div class="divider"></div>
+													<div id="approvediv" style="display: none;">
+														<p></p>
+													</div>
 													<button id="decline" type="button"
 														class="btn btn-danger btn-xs"
 														onclick="Mydecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
@@ -552,58 +444,6 @@ display:none;
 			</div>
 
 		</div>
-		<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#ApproveDecline">Open Modal</button> -->
-
-<!-- Modal -->
-		<form action="agilelogin" method="post">
-			<div id="ApproveDecline" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Request status</h4>
-						</div>
-						<div class="modal-body">
-							<p id="approvep">Request approved Say ok.</p>
-							<!-- <p id="declinep">Request declined Say ok.</p> -->
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-info">OK</button>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">Close</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
-		<!-- Modal -->
-		<form action="agilelogin" method="post">
-			<div id="myDecline" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Request status</h4>
-						</div>
-						<div class="modal-body">
-
-							<p id="declinep">Request declined Say ok.</p>
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-info">OK</button>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">Close</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
 	</div>
 	<jsp:include page="footer.jsp" />
 </body>

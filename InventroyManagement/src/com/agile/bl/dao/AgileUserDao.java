@@ -19,6 +19,13 @@ public interface AgileUserDao {
 	 * @return Returns the list of AgileUser which contains the detail information of all the users in the system
 	 */
 	public List<AgileUser> getUserDetails();
+	/**
+	 * @param emailId
+	 * 			email id of user has to be passed
+	 * @return
+	 * 			Returns the user id for specified email id
+	 */
+	public int getUserId(String emailId);
 	
 //	public String updateUserDetails(AgileUser object, String emailId);
 //	public String deleteUserDetails(String emailId);
