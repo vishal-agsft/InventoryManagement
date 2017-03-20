@@ -2,15 +2,35 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
-<%@ page session="false" %>
+<%@ page session="false"%>
+<%
+HttpSession httpSession =request.getSession();
+if(httpSession==null){
+	response.sendRedirect("login.jsp");
+}
+
+
+// Create cookies for first and last names.      
+Cookie mail = new Cookie("mail",
+			  request.getParameter("email"));
+Cookie pass = new Cookie("pass",
+			  request.getParameter("pwd"));
+
+// Set expiry date after 24 Hrs for both the cookies.
+mail.setMaxAge(60*60*24); 
+pass.setMaxAge(60*60*24); 
+
+// Add both the cookies in the response header.
+response.addCookie( mail );
+response.addCookie( pass );
+%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
-<!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-<!-- <script src="js/bootstrap.min.js"></script> -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
 <script
@@ -52,31 +72,117 @@ html {
 tr:hover {
 	background-color: #f5f5f5
 }
-</style>
-<script type="text/javascript">
-function Myconfirm(itemid,itemName,emailid,requestid) {
-var i=itemid;
-var j=itemName;
-var k=emailid;
-var l=requestid;
-		 $.ajax({  
-			    type: "POST",  
-			    url: "moderatereq",  
-			    data: {itemid:i,itemName:j,emailid:k,requestid:l},  
-			    success: function(result){  
-			    	console.log(result);
-			    	$("#approvediv").show();
-			    	$("#approvediv").html(result);
-			    }                
-			  });  
-		
-		
+#Loaderdiv{
+display: none;
 
-	//document.getElementById("demo").innerHTML = txt;
+}
+#loader {
+display:none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
 }
 
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 } 
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+  from{ bottom:-100px; opacity:0 } 
+  to{ bottom:0; opacity:1 }
+}
+
+#myDiv {
+  display: none;
+  text-align: center;
+}
+</style>
+<script type="text/javascript">
+	function Myconfirm(itemid, itemName, emailid, requestid) {
+		$("#loader").fadeIn("slow");
+		var i = itemid;
+		var j = itemName;
+		var k = emailid;
+		var l = requestid;
+		$.ajax({
+			type : "POST",
+			url : "approvereq",
+			data : {
+				itemid : i,
+				itemName : j,
+				emailid : k,
+				requestid : l
+			},
+			success : function(result) {
+				console.log(result);
+				$("#loader").fadeOut();
+				/* alert("Request Approved!!") */
+				$("#ApproveDecline").modal('show');
+				//document.location.href = 'agilelogin';
+				/* var successUrl = "adminpanel.jsp";
+				window.location.href = successUrl; */
+			}
+		});
+	}
+	function Mydecline(itemid, itemName, emailid, requestid) {
+		$("#loader").fadeIn("slow");
+		var i = itemid;
+		var j = itemName;
+		var k = emailid;
+		var l = requestid;
+		$.ajax({
+			type : "POST",
+			url : "declinereq",
+			data : {
+				itemid : i,
+				itemName : j,
+				emailid : k,
+				requestid : l
+			},
+			success : function(result) {
+				$("#loader").fadeOut();
+				/* alert("Request Approved!!") */
+				$("#myDecline").modal('show');
+				/* var successUrl = "agilelogin";
+				window.location.href = successUrl; */
+			}
+		});
+	}
+	
+	$('#usermodaladd').on('shown.bs.modal', function() {
+	    $(document).off('focusin.modal');
+	});
 </script>
 <title>Admin Panel</title>
 </head>
@@ -84,7 +190,16 @@ var l=requestid;
 
 	<jsp:include page="Topview.jsp" />
 	<jsp:include page="logout.jsp" />
+	<!-- <div class="col-lg-12 loader" id="Loaderdiv">
+	<img src="/images/Pure-CSS-loading-spiner.jpg"></img>
+	
+	</div> -->
 	<div class="container col-lg-12 col-lg-offset-4" id="MainDiv">
+	<div id="loader"></div>
+
+<div style="display:none;" id="myDiv" class="animate-bottom">
+ 
+</div>
 		<h3>Inventory Management</h3>
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#inventory">Inventory</a></li>
@@ -125,13 +240,9 @@ var l=requestid;
 														data-title="Edit">Edit</button>
 												</td>
 											</tr>
-
 										</c:forEach>
-
-
 									</tbody>
 								</table>
-
 							</div>
 							<div class="col-lg-2" id="add">
 								<button type="button" class="btn btn-info" data-toggle="modal"
@@ -141,12 +252,8 @@ var l=requestid;
 						</div>
 					</div>
 
-
-					<!-- <input type="button" class="btn btn-primary" value="Add Inventory"
-							id="addinventory"> -->
-
-					<!-- Modal -->
-					<form action="newitem" method="get">
+					<!--Add item Modal -->
+					<form action="newitem" method="post">
 						<div id="myModal" class="modal fade" tabindex="-1" role="dialog"
 							aria-labelledby="myModal">
 							<div class="modal-dialog modal-md">
@@ -196,25 +303,17 @@ var l=requestid;
 										<!-- <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>  -->
 										<button type="button" class="btn btn-danger"
 											data-dismiss="modal">Cancel</button>
-
 									</div>
-
 								</div>
-
-
 							</div>
 						</div>
 					</form>
 
-					<!-- <input type="button" class="btn btn-primary" value="Add Inventory"
-							id="addinventory"> -->
-
-					<!-- Modal -->
+					<!-- Edit item Modal -->
 					<form action="edititem" method="post">
 						<div id="myModal2" class="modal fade" tabindex="-1" role="dialog"
 							aria-labelledby="editModal">
 							<div class="modal-dialog modal-md">
-
 								<!-- Modal content-->
 								<div class="modal-content">
 									<div class="modal-header">
@@ -232,7 +331,7 @@ var l=requestid;
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="text" class="form-control" style="float: right;"
 												class="pull-left clear-float-mobile" name="itemName"
-												id="itemName" value="" placeholder="" />
+												id="itemName" value="" placeholder="" required="required" />
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
@@ -242,7 +341,8 @@ var l=requestid;
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="text" class="form-control" style="float: right;"
 												class="pull-left clear-float-mobile" name="itemQuantities"
-												id="itemQuantities" value="" placeholder="" />
+												id="itemQuantities" value="" placeholder=""
+												required="required" />
 										</div>
 
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
@@ -253,9 +353,9 @@ var l=requestid;
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="text" class="form-control" style="float: right;"
 												class="pull-left clear-float-mobile" name="itemDescription"
-												id="itemDescription" value="" placeholder="" />
+												id="itemDescription" value="" placeholder=""
+												required="required" />
 										</div>
-
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -263,21 +363,17 @@ var l=requestid;
 										<!-- <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>  -->
 										<button type="button" class="btn btn-danger"
 											data-dismiss="modal">Cancel</button>
-
 									</div>
 								</div>
-
 							</div>
 						</div>
 					</form>
-
 				</div>
 			</div>
+			<!-- Users Tab view -->
 			<div id="users" class="tab-pane fade">
 
 				<div class="col-lg-12">
-					<!-- <input type="button" class="btn btn-primary"
-							value="View Inventory" id="viewinventory"> -->
 					<div class="container">
 						<h2>Users List</h2>
 						<div class="col-lg-12">
@@ -288,7 +384,6 @@ var l=requestid;
 											<th>FirstName</th>
 											<th>LastName</th>
 											<th>Email</th>
-											<!-- <th>Edit Items</th> -->
 										</tr>
 									</thead>
 									<tbody>
@@ -299,32 +394,22 @@ var l=requestid;
 												<td>${user.emailId}</td>
 
 											</tr>
-
 										</c:forEach>
-
-
 									</tbody>
 								</table>
-
 							</div>
 							<div class="col-lg-2" id="add">
 								<button type="button" class="btn btn-info" data-toggle="modal"
 									data-target="#usermodaladd" id="addUser">Add Users</button>
 							</div>
-
 						</div>
 					</div>
 
-
-					<!-- <input type="button" class="btn btn-primary" value="Add Inventory"
-							id="addinventory"> -->
-
-					<!-- Modal -->
-					<form action="insertuser" method="get">
+					<!--Add user Modal -->
+						<form action="insertuser" method="post">
 						<div id="usermodaladd" class="modal fade" tabindex="-1"
 							role="dialog">
 							<div class="modal-dialog modal-md">
-
 								<!-- Modal content-->
 								<div class="modal-content">
 									<div class="modal-header">
@@ -333,7 +418,7 @@ var l=requestid;
 										<h4 class="modal-title">Add Users</h4>
 									</div>
 									<div class="modal-body col-lg-12 col-sm-12 col-xs-12">
-
+									
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
@@ -341,7 +426,8 @@ var l=requestid;
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="text" class="form-control" style="float: right;"
-												class="pull-left clear-float-mobile" name="firstName" />
+												class="pull-left clear-float-mobile" name="firstName"
+												required="required" />
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
@@ -350,32 +436,42 @@ var l=requestid;
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="text" class="form-control" style="float: right;"
-												class="pull-left clear-float-mobile" name="lastName" />
+												class="pull-left clear-float-mobile" name="lastName"
+												required="required" />
 										</div>
 
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Email: </label>
+												class="pull-right clear-float-mobile">Email </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
-											<input type="text" class="form-control" style="float: right;"
-												class="pull-left clear-float-mobile" name="emailid" />
+											<input type="email" class="form-control"
+												style="float: right;" class="pull-left clear-float-mobile"
+												name="emailid" required="required" />
 										</div>
 
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Password: </label>
+												class="pull-right clear-float-mobile">Password </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
-											<input type="text" class="form-control" style="float: right;"
-												class="pull-left clear-float-mobile" name="password" />
+											<input type="password" class="form-control"
+												style="float: right;" class="pull-left clear-float-mobile"
+												name="password" required="required" />
 										</div>
-										<div class="checkbox">
-											<label><input type="checkbox" value="chk"
-												checked="checked" name="admincheck">Is Admin</label>
+										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
+											<label
+												style="font-size: 18px; font-weight: 300; float: right;"
+												class="pull-right clear-float-mobile">Is Admin </label>
 										</div>
+										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
+											<input type="checkbox"
+												style="float: left;" class="pull-left clear-float-mobile"
+												name="admincheck" value="chk" />
+										</div>
+										
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -383,18 +479,16 @@ var l=requestid;
 										<!-- <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>  -->
 										<button type="button" class="btn btn-danger"
 											data-dismiss="modal">Cancel</button>
-
 									</div>
-
+									
 								</div>
-
-
 							</div>
 						</div>
 					</form>
-
 				</div>
 			</div>
+
+			<!-- Request Tab view -->
 			<div id="request" class="tab-pane fade">
 				<!-- <h3>Request Panel</h3> -->
 				<div class="col-lg-12">
@@ -412,7 +506,6 @@ var l=requestid;
 											<th>Email</th>
 											<th>Requested item</th>
 											<th>Status</th>
-											<!-- <th>Edit Items</th> -->
 										</tr>
 									</thead>
 									<tbody>
@@ -424,51 +517,80 @@ var l=requestid;
 												<td>${user.itemName}</td>
 												<td>
 													<button id="approve" class="btn btn-success btn-xs"
-														onclick="Myconfirm('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')" value="approve" name="requestbtn">Approve</button>
-													<div class="divider"></div><div id="approvediv" style="display:none;"><p></p></div>
+														onclick="Myconfirm('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
+														value="approve" name="requestbtn">Approve</button>
+													<div class="divider"></div>
+													<div id="approvediv" style="display: none;">
+														<p></p>
+													</div>
 													<button id="decline" type="button"
-														class="btn btn-danger btn-xs" onclick="Mydecline()" value="decline" name="requestbtn">Decline</button>
+														class="btn btn-danger btn-xs"
+														onclick="Mydecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
+														value="decline" name="requestbtn">Decline</button>
 												</td>
 											</tr>
-
 										</c:forEach>
-
-
 									</tbody>
 								</table>
-
 							</div>
-							<!-- <p id="demo"></p>
-						
-							<dialog id="window" style="display:none;">
-							<h3>Do you want to approve?</h3>
-							<p>Confirm here</p>
-							<button id="exit">Close Dialog
-							</dialog> -->
-
 						</div>
 					</div>
-
-
-					<!-- <input type="button" class="btn btn-primary" value="Add Inventory"
-							id="addinventory"> -->
-
-					<!-- Modal -->
-
-
-					<!-- <input type="button" class="btn btn-primary" value="Add Inventory"
-							id="addinventory"> -->
-
-					<!-- Modal -->
-
-
-
 				</div>
 			</div>
 
 		</div>
+		<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#ApproveDecline">Open Modal</button> -->
+
+<!-- Modal -->
+<form action="agilelogin" method="post">
+<div id="ApproveDecline" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Request status</h4>
+      </div>
+      <div class="modal-body">
+        <p id="approvep">Request approved Say ok.</p>
+         <!-- <p id="declinep">Request declined Say ok.</p> -->
+      </div>
+      <div class="modal-footer">
+      <button type="submit" class="btn btn-info">OK</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
 </div>
-		<jsp:include page="footer.jsp" />
+</form>
+<!-- Modal -->
+<form action="agilelogin" method="post">
+<div id="myDecline" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Request status</h4>
+      </div>
+      <div class="modal-body">
+        
+         <p id="declinep">Request declined Say ok.</p>
+      </div>
+      <div class="modal-footer">
+      <button type="submit" class="btn btn-info">OK</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</form>
+	</div>
+	<jsp:include page="footer.jsp" />
 </body>
 <script type="text/javascript">
 	function setvals(itemName, itemQuantities, itemDescription) {
@@ -477,18 +599,5 @@ var l=requestid;
 		$("#itemDescription").val(itemDescription);
 		$('#myModal2').modal('show');
 	}
-
-	
-	/* function Mydecline() {
-		var txt;
-		var r = confirm("Press ok if you want to decline else press cancel to close");
-		if (r == true) {
-			alert("Request Declined!!")
-			txt = "You pressed Decline!";
-		} else {
-			txt = "You pressed Cancel!";
-		} */
-		//document.getElementById("demo").innerHTML = txt;
-	/* } */
 </script>
 </html>

@@ -1,6 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ page session="false" %>
+<%@ page session="false" %>
+<%-- <%
+HttpSession httpSession =request.getSession();
+if(httpSession!=null){
+	response.sendRedirect("login.jsp");
+}
+
+
+%> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,9 +55,9 @@
 				<label for="pwd">Password:</label> <input type="password"
 					required="required" class="form-control" name="pwd">
 			</div>
-			<div class="checkbox">
-				<label><input type="checkbox"> Remember me</label>
-			</div>
+			<!-- <div class="checkbox">
+				<label><input type="checkbox" name="chkcookie" value="chkvalue" > Remember me</label>
+			</div> -->
 			<div class="form-group" id="buttondiv">
 				<button type="submit" class="btn btn-primary" class="form-control">Login</button>
 			</div>
