@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +59,7 @@ public class AgileLogin extends HttpServlet {
 			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 			response.setHeader("Pragma", "no-cache");
 			response.setDateHeader("Expires", 0);
-
+			
 			if (httpSession == null || httpSession.getAttribute("email") == null) {
 				System.out.println("Null Session Detected ... creating new one");
 
@@ -68,7 +69,7 @@ public class AgileLogin extends HttpServlet {
 
 				String email = request.getParameter("email");
 				String password = request.getParameter("pwd");
-
+				
 				// checks for user existence
 				if (agileLoginDao.authenticateUser(email, password)) {
 					httpSession = request.getSession(true);
@@ -103,7 +104,9 @@ public class AgileLogin extends HttpServlet {
 
 				} else {
 					// response.sendRedirect("login.jsp");
-					dispatcher = request.getRequestDispatcher("login.jsp");
+					String log="loginfail";
+					request.setAttribute("fail", log);
+					dispatcher = request.getRequestDispatcher("errorpage.jsp");
 					dispatcher.forward(request, response);
 				}
 			} else if (httpSession != null && httpSession.getAttribute("email") != null) {
@@ -113,7 +116,7 @@ public class AgileLogin extends HttpServlet {
 				String password = (String) httpSession.getAttribute("password");
 
 				if (agileLoginDao.authenticateAdmin(email, password)) {
-				/*	System.out.println("passing parameters again");*/
+					System.out.println("passing parameters again");
 					List<AgileItems> allItems = new ArrayList<>();
 					List<RequestDetails> allPendingRequests = new ArrayList<>();
 					List<AgileUser> allUsers = new ArrayList<>();
@@ -130,6 +133,17 @@ public class AgileLogin extends HttpServlet {
 					dispatcher.forward(request, response);
 
 				} else {
+					List<AgileItems> allItems = new ArrayList<>();
+					List<RequestDetails> allPendingRequests = new ArrayList<>();
+					List<AgileUser> allUsers = new ArrayList<>();
+
+					allItems = agileItemDao.getItemDetails();
+					allPendingRequests = agileReqDao.getRequestDetails();
+					allUsers = agileUserDao.getUserDetails();
+
+					request.setAttribute("itemsList", allItems);
+					request.setAttribute("reqList", allPendingRequests);
+					request.setAttribute("usersList", allUsers);
 					dispatcher = request.getRequestDispatcher("UsersView.jsp");
 					dispatcher.forward(request, response);
 				}
