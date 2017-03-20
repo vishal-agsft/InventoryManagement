@@ -37,7 +37,7 @@ public class AgileIAddNewUser extends HttpServlet {
 		response.setDateHeader("Expires", 0);
 
 		if (httpSession == null) {
-			response.sendRedirect("login");
+			response.sendRedirect("login.jsp");
 		} else {
 
 			try {
@@ -66,8 +66,10 @@ public class AgileIAddNewUser extends HttpServlet {
 				agileUser.setPassword(password);
 				agileUser.setIsadmin(isAdmin);
 
-				agileUserImpl.addUserDetails(agileUser);
+				/*String data =*/agileUserImpl.addUserDetails(agileUser);
+				/*if(data!=null)*/
 				response.sendRedirect("agilelogin");
+				
 
 			} catch (Exception e) {
 				Logger.getGlobal().log(Level.SEVERE, "Unable to log user", e.getClass().getName());
@@ -77,7 +79,7 @@ public class AgileIAddNewUser extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		doGet(request, response);
 	}
 
 }
