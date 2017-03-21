@@ -12,12 +12,12 @@ import java.util.List;
 import com.agile.bl.model.AgileItems;
 
 public class AgileItemDaoImplementation implements AgileItemDao {
-
-	private Connection connection = DBConnection.getInstance().getConnection();
-
+	
+	private static final int MIN_ROW_COUNT = 0;
+	
 	@Override
 	public String addItemDetails(AgileItems object) {
-
+		Connection connection = DBConnection.getInstance().getConnection();
 		String query = "insert into Items(itemname, quantity, description, lastmodifieddate) values(?,?,?,?)";
 
 		try {
@@ -28,9 +28,9 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 			ps.setString(3, object.getDescription());
 			ps.setTimestamp(4,  new Timestamp(System.currentTimeMillis()));
 
-			int rowCount = ps.executeUpdate();
+//			int rowCount = ps.executeUpdate();
 
-			if(checkRowCount(rowCount)){
+			if(checkRowCount(ps.executeUpdate())){
 				return "Record stored successfully..!";
 			}
 
@@ -42,15 +42,13 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 	}
 
 	private boolean checkRowCount(int rowCount){
-
-		if(rowCount > 0)
-			return true;
-
-		return false;
+		// row count is total count, to check number of rows affected
+		return rowCount > MIN_ROW_COUNT;
 	}
 
 	@Override
 	public List<AgileItems> getItemDetails() {
+		Connection connection = DBConnection.getInstance().getConnection();
 		String query = "select *from Items";
 		List<AgileItems> listOfItems = new ArrayList<>();
 
@@ -71,8 +69,9 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 	}
 
 	@Override
-	public String updateItemDetails(AgileItems object, String itemName) {
-		String query = "update Items set itemname=?, quantity=?, description=?, lastmodifieddate=? where itemName = ?";
+	public String updateItemDetails(AgileItems object, String oldItemName) {
+		Connection connection = DBConnection.getInstance().getConnection();
+		String query = "update Items set itemname=?, quantity=?, description=?, lastmodifieddate=? where oldItemName = ?";
 
 		try {
 			PreparedStatement ps = connection.prepareStatement(query);
@@ -81,12 +80,14 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 			ps.setInt(2, object.getQuantity());
 			ps.setString(3, object.getDescription());
 			ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-			ps.setString(5, itemName);
+			ps.setString(5, oldItemName);
 
 
-			int rowCount = ps.executeUpdate();
+//			int rowCount = ps.executeUpdate();
+			
+			System.out.println("Query is : " + ps.toString());
 
-			if(checkRowCount(rowCount)){
+			if(checkRowCount(ps.executeUpdate())){
 				return "Record updated successfully..!";
 			}			
 
@@ -100,15 +101,16 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 
 	@Override
 	public String deleteItemDetails(String itemName) {
+		Connection connection = DBConnection.getInstance().getConnection();
 		String query = "delete from Items where itemName = ?";
 
 		try {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, itemName);
 
-			int rowCount = ps.executeUpdate();
+//			int rowCount = ps.executeUpdate();
 
-			if(checkRowCount(rowCount)){
+			if(checkRowCount(ps.executeUpdate())){
 				return "Record deleted successfully..!";
 			}
 
@@ -118,26 +120,28 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 
 		return "Record can not be deleted";
 	}
-	 @Override
-		public int getItemId(String itemName) {
-			String query = "SELECT itemid FROM Items WHERE itemname = ?";
-			int itemId = 0;
-			
-			try {
-				PreparedStatement ps = connection.prepareStatement(query);
-				ps.setString(1, itemName);
-				
-				ResultSet rs = ps.executeQuery();
-				
-				while(rs.next()){
-					itemId = rs.getInt("itemid");
-				}
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
+	
+	@Override
+	public int getItemId(String itemName) {
+		Connection connection = DBConnection.getInstance().getConnection();
+		String query = "SELECT itemid FROM Items WHERE itemname = ?";
+		int itemId = 0;
+
+		try {
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setString(1, itemName);
+
+			ResultSet rs = ps.executeQuery();
+
+			while(rs.next()){
+				itemId = rs.getInt("itemid");
 			}
-			
-			return itemId;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+
+		return itemId;
+	}
 
 }
