@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.agile.bl.dao.AgileItemDao;
 import com.agile.bl.dao.AgileItemDaoImplementation;
 import com.agile.bl.model.AgileItems;
 
@@ -25,13 +26,14 @@ public class AgileEditItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private static Logger log = Logger.getLogger(AgileEditItem.class);
-	AgileItemDaoImplementation agileItemDao = new AgileItemDaoImplementation();
+	AgileItemDao agileItemDao = new AgileItemDaoImplementation();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try{
 			int itemQuantity = Integer.valueOf(request.getParameter("itemQuantities"));
 			String itemName = request.getParameter("itemName");
+			int itemId = agileItemDao.getItemId(itemName);
 			String itemDescription = request.getParameter("itemDescription");
 			Timestamp currentTs = new Timestamp(System.currentTimeMillis());
 			
@@ -41,7 +43,7 @@ public class AgileEditItem extends HttpServlet {
 			agileItems.setDescription(itemDescription);
 			agileItems.setLastModifiedDate(currentTs);
 			
-			agileItemDao.updateItemDetails(agileItems, itemName);
+			agileItemDao.updateItemDetails(agileItems, itemId);
 			response.sendRedirect("agilelogin");
 			
 		}catch(Exception e){
