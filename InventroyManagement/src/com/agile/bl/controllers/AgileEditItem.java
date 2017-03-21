@@ -33,7 +33,10 @@ public class AgileEditItem extends HttpServlet {
 		try{
 			int itemQuantity = Integer.valueOf(request.getParameter("itemQuantities"));
 			String itemName = request.getParameter("itemName");
-			int itemId = agileItemDao.getItemId(itemName);
+			int itemId = Integer.parseInt(request.getParameter("itemId"));
+			log.debug("Item id is : " + itemId);
+			System.out.println(itemId);
+			
 			String itemDescription = request.getParameter("itemDescription");
 			Timestamp currentTs = new Timestamp(System.currentTimeMillis());
 			
