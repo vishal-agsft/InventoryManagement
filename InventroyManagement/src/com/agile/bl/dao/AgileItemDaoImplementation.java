@@ -58,7 +58,7 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 
 			while(rs.next()){
 
-				listOfItems.add(new AgileItems(rs.getString("itemname"), rs.getInt("quantity"), 
+				listOfItems.add(new AgileItems(rs.getInt("itemid"), rs.getString("itemname"), rs.getInt("quantity"), 
 						rs.getString("description"), rs.getTimestamp("lastmodifieddate")));
 
 			}
@@ -69,9 +69,9 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 	}
 
 	@Override
-	public String updateItemDetails(AgileItems object, String oldItemName) {
+	public String updateItemDetails(AgileItems object, int itemId) {
 		Connection connection = DBConnection.getInstance().getConnection();
-		String query = "update Items set itemname=?, quantity=?, description=?, lastmodifieddate=? where oldItemName = ?";
+		String query = "update Items set itemname=?, quantity=?, description=?, lastmodifieddate=? where itemid = ?";
 
 		try {
 			PreparedStatement ps = connection.prepareStatement(query);
@@ -80,7 +80,7 @@ public class AgileItemDaoImplementation implements AgileItemDao {
 			ps.setInt(2, object.getQuantity());
 			ps.setString(3, object.getDescription());
 			ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-			ps.setString(5, oldItemName);
+			ps.setInt(5, itemId);
 
 
 //			int rowCount = ps.executeUpdate();

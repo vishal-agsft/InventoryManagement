@@ -34,7 +34,7 @@ public interface AgileItemDao {
 	 * @return
 	 * 			The string value i.e. response message which specifies whether item details are updated or not 
 	 */
-	public String updateItemDetails(AgileItems object, String oldItemName);
+	public String updateItemDetails(AgileItems object, int itemId);
 	
 	
 	/**
