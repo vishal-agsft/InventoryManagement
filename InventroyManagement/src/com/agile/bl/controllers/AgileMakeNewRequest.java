@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.agile.bl.dao.AgileItemDao;
 import com.agile.bl.dao.AgileItemDaoImplementation;
+import com.agile.bl.dao.AgileRequestDao;
 import com.agile.bl.dao.AgileRequestDaoImplementation;
+import com.agile.bl.dao.AgileUserDao;
 import com.agile.bl.dao.AgileUserDaoImplementation;
 import com.agile.bl.model.AgileRequest;
 
@@ -23,9 +26,9 @@ import com.agile.bl.model.AgileRequest;
 public class AgileMakeNewRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AgileRequestDaoImplementation agileReqDao = new AgileRequestDaoImplementation();
-	AgileItemDaoImplementation agileItemDao = new AgileItemDaoImplementation();
-	AgileUserDaoImplementation agileUserDao = new AgileUserDaoImplementation();
+	AgileRequestDao agileReqDao = new AgileRequestDaoImplementation();
+	AgileItemDao agileItemDao = new AgileItemDaoImplementation();
+	AgileUserDao agileUserDao = new AgileUserDaoImplementation();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -36,7 +39,6 @@ public class AgileMakeNewRequest extends HttpServlet {
 
 			int userId = agileUserDao.getUserId(emailId);
 			int itemId = agileItemDao.getItemId(itemName);
-			System.out.println(itemName+""+itemId);
 			Timestamp requestedDate = new Timestamp(System.currentTimeMillis());
 			int currentRequestedStatus = 2;
 

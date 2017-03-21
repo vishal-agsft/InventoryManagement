@@ -41,10 +41,10 @@ public class AgileApprovalRequests extends HttpServlet {
 			String description = "";
 			String a = request.getParameter("itemid");
 			String b = request.getParameter("requestid");
-			System.out.println(a);
+			
 			int i = Integer.parseInt(a);
-			System.out.println(i + "" + a);
 			int j = Integer.parseInt(b);
+			
 			String toEmail = request.getParameter("emailid");
 			int itemId = i;
 			int requestId = j;

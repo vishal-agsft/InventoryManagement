@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.agile.bl.dao.AgileRequestDao;
 import com.agile.bl.dao.AgileRequestDaoImplementation;
 import com.agile.bl.utility.AgileMailTemplate;
 import com.agile.bl.utility.AgileRequestStatus;
@@ -17,7 +18,7 @@ import com.agile.bl.utility.AgileRequestStatus;
 public class AgileDeclineRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AgileRequestDaoImplementation agileReqImpl = new AgileRequestDaoImplementation();
+	AgileRequestDao agileReqImpl = new AgileRequestDaoImplementation();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -31,19 +32,15 @@ public class AgileDeclineRequest extends HttpServlet {
 		try {
 
 			String description = "";
-			String a = request.getParameter("itemid");
 			String b = request.getParameter("requestid");
-			System.out.println(a);
-			int i = Integer.parseInt(a);
-			System.out.println(i + "" + a);
+
 			int j = Integer.parseInt(b);
+			
 			String toEmail = request.getParameter("emailid");
-			int itemId = i;
 			int requestId = j;
 			String itemName = request.getParameter("itemName");
 
 			description = "Your request has been accepted for Item : " + itemName;
-			agileReqImpl.approveRequest(itemId);
 			agileReqImpl.updateRequestStatus(requestId, AgileRequestStatus.DECLINED);
 			AgileMailTemplate.sendEmail(toEmail, rejectionSubject, description);
 

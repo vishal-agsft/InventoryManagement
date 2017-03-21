@@ -6,8 +6,6 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.agile.bl.loginout.AgileLogin;
-
 public class MyListener implements ServletContextListener{  
 	HttpServletRequest request;
 	AgileLogin ag = new AgileLogin();

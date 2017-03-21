@@ -47,8 +47,6 @@ public class AgileIAddNewUser extends HttpServlet {
 				String password = request.getParameter("password");
 				String adminCheckBoxValue = request.getParameter("admincheck");
 
-				System.out.println("-> " + adminCheckBoxValue);
-
 				boolean isAdmin;
 
 				if ("chk".equalsIgnoreCase(adminCheckBoxValue)) {
@@ -56,8 +54,6 @@ public class AgileIAddNewUser extends HttpServlet {
 				} else {
 					isAdmin = false;
 				}
-
-				System.out.println(" -> -> " + isAdmin);
 
 				AgileUser agileUser = new AgileUser();
 				agileUser.setFirstName(firstName);

@@ -40,11 +40,9 @@ public class AgileMailTemplate {
 
 		// Create a default MimeMessage object.
 		Message message = new MimeMessage(session);
-		System.out.println("Set with session");
 
 		// Set From: header field of the header.
 		message.setFrom(new InternetAddress(from));
-		System.out.println("Set with i[");
 
 		// Set To: header field of the header.
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
@@ -58,7 +56,7 @@ public class AgileMailTemplate {
 		// Send message
 		Transport.send(message);
 
-		System.out.println("Sent message successfully....");
+		System.out.println("Sent message successfully to : " + to);
 	}
 
 }
