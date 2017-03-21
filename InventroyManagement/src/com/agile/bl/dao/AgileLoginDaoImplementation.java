@@ -7,8 +7,6 @@ import java.sql.SQLException;
 
 public class AgileLoginDaoImplementation implements AgileLoginDao{
 
-	private Connection connection = DBConnection.getInstance().getConnection();
-	
 	@Override
 	/**
 	 * @param email
@@ -22,6 +20,7 @@ public class AgileLoginDaoImplementation implements AgileLoginDao{
 	 *         false
 	 */
 	public boolean authenticateUser(String email, String password) {
+		Connection connection = DBConnection.getInstance().getConnection();
 		boolean status = false;
 
 		try {
@@ -37,9 +36,7 @@ public class AgileLoginDaoImplementation implements AgileLoginDao{
 				status = true;
 			}
 
-		} catch (
-
-				SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -59,6 +56,7 @@ public class AgileLoginDaoImplementation implements AgileLoginDao{
 	 *         else false
 	 */
 	public boolean authenticateAdmin(String email, String password) {
+		Connection connection = DBConnection.getInstance().getConnection();
 		boolean status = false;
 
 		try {
