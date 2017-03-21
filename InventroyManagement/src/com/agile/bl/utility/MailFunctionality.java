@@ -11,10 +11,26 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class AgileMailTemplate {
+import org.apache.log4j.Logger;
 
+/**
+ * @author Vishal Arora
+ * 
+ *         mailing utility for the system when the user accepts or declines the
+ *         request for an inventory item
+ *
+ */
+public class MailFunctionality {
+
+	private static Logger log = Logger.getLogger(MailFunctionality.class);
+	/**
+	 * @param to : recipient of the email 
+	 * @param subject : subject of the email (approve/decline)
+	 * @param body : content of the email
+	 */
 	public static void sendEmail(String to, String subject, String body) throws AddressException, MessagingException {
 
+		
 		final String from = "agilesoft2015@gmail.com";
 		final String username = "agilesoft2015@gmail.com";
 		final String password = "welcome123$";
@@ -25,7 +41,7 @@ public class AgileMailTemplate {
 		Properties props = System.getProperties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
-	//	props.put("mail.smtp.ssl.enable", "true");
+		// props.put("mail.smtp.ssl.enable", "true");
 		props.put("mail.smtp.host", host);
 		props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
 		props.setProperty("mail.smtp.socketFactory.fallback", "false");
@@ -43,7 +59,6 @@ public class AgileMailTemplate {
 
 		// Set From: header field of the header.
 		message.setFrom(new InternetAddress(from));
-
 		// Set To: header field of the header.
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
@@ -56,7 +71,7 @@ public class AgileMailTemplate {
 		// Send message
 		Transport.send(message);
 
-		System.out.println("Sent message successfully to : " + to);
+		log.debug("Sent message successfully to : " + to);
 	}
 
 }
