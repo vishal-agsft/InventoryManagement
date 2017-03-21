@@ -30,7 +30,7 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 			
 //			int rowCount = ps.executeUpdate();
 			
-			if(checkRowCount(ps.executeUpdate())){
+			if(isRowAffected(ps.executeUpdate())){
 				return "Record stored successfully..!";
 			}
 			
@@ -41,7 +41,7 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 		return "Record can not be stored..!";
 	}
 
-	private boolean checkRowCount(int rowCount){
+	private boolean isRowAffected(int rowCount){
 		// row count is total count, to check number of rows affected
 		return rowCount > MIN_ROW_COUNT;
 	}
@@ -79,7 +79,7 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 			
 //			int rowCount = ps.executeUpdate();
 			
-			if(checkRowCount(ps.executeUpdate())){
+			if(isRowAffected(ps.executeUpdate())){
 				return "Items updated successfully..!";
 			}
 			
@@ -113,7 +113,7 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 
 //			int rowCount = ps.executeUpdate();
 
-			if(checkRowCount(ps.executeUpdate()))
+			if(isRowAffected(ps.executeUpdate()))
 				return "Request status is updated successfully..!";
 
 		} catch (SQLException e) {

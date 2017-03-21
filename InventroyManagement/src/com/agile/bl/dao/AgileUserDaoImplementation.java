@@ -31,7 +31,7 @@ public class AgileUserDaoImplementation implements AgileUserDao{
 
 //			int rowCount = ps.executeUpdate();
 
-			if(checkRowCount(ps.executeUpdate())){
+			if(isRowAffected(ps.executeUpdate())){
 				return "Record stored successfully..!";
 			}
 		} catch (SQLException e) {
@@ -41,7 +41,7 @@ public class AgileUserDaoImplementation implements AgileUserDao{
 		return "Record can not be stored..!";
 	}
 
-	private boolean checkRowCount(int rowCount){
+	private boolean isRowAffected(int rowCount){
 		// row count is total count, to check number of rows affected
 		return rowCount > MIN_ROW_COUNT;
 	}
@@ -114,7 +114,7 @@ public class AgileUserDaoImplementation implements AgileUserDao{
 
 				int rowCount = ps.executeUpdate();
 
-				if(checkRowCount(ps.executeUpdate())){
+				if(isRowAffected(ps.executeUpdate())){
 					return "Record updated successfully..!";
 				}			
 
@@ -136,7 +136,7 @@ public class AgileUserDaoImplementation implements AgileUserDao{
 
 				int rowCount = ps.executeUpdate();
 
-				if(checkRowCount(ps.executeUpdate())){
+				if(isRowAffected(ps.executeUpdate())){
 					return "Record deleted successfully..!";
 				}
 
