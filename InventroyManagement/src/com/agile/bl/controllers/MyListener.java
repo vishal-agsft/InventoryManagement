@@ -1,10 +1,8 @@
 package com.agile.bl.controllers;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class MyListener implements ServletContextListener{  
 	HttpServletRequest request;

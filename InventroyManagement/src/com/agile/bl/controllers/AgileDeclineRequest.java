@@ -9,16 +9,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.agile.bl.dao.AgileRequestDao;
 import com.agile.bl.dao.AgileRequestDaoImplementation;
-import com.agile.bl.utility.AgileMailTemplate;
+import com.agile.bl.utility.MailFunctionality;
 import com.agile.bl.utility.AgileRequestStatus;
 
+/**
+ * 
+ * @author Vishal Arora
+ * 
+ * declines pending requests
+ *
+ */
 @WebServlet("/declinereq")
 public class AgileDeclineRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	AgileRequestDao agileReqImpl = new AgileRequestDaoImplementation();
+	private static Logger log = Logger.getLogger(AgileDeclineRequest.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -42,7 +52,7 @@ public class AgileDeclineRequest extends HttpServlet {
 
 			description = "Your request has been accepted for Item : " + itemName;
 			agileReqImpl.updateRequestStatus(requestId, AgileRequestStatus.DECLINED);
-			AgileMailTemplate.sendEmail(toEmail, rejectionSubject, description);
+			MailFunctionality.sendEmail(toEmail, rejectionSubject, description);
 
 			PrintWriter out = response.getWriter();
 			out.println("<html>");
@@ -51,8 +61,9 @@ public class AgileDeclineRequest extends HttpServlet {
 			out.println("</body>");
 			out.println("</html>");
 			// response.sendRedirect("agilelogin");
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("unable to decline request or mail is not sent as expected", e.getCause());
 		}
 	}
 

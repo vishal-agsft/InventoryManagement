@@ -9,23 +9,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.agile.bl.dao.AgileRequestDao;
 import com.agile.bl.dao.AgileRequestDaoImplementation;
-import com.agile.bl.utility.AgileMailTemplate;
 import com.agile.bl.utility.AgileRequestStatus;
+import com.agile.bl.utility.MailFunctionality;
 
 /**
  * Servlet implementation class AgileModerateRequests
  * 
  * @author Vishal Arora
  * 
- *         this code approves/rejects pending requests ...
+ *         approves pending requests ...
  * 
  */
 @WebServlet("/approvereq")
 public class AgileApprovalRequests extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AgileRequestDaoImplementation agileReqImpl = new AgileRequestDaoImplementation();
+	AgileRequestDao agileReqImpl = new AgileRequestDaoImplementation();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -53,7 +54,7 @@ public class AgileApprovalRequests extends HttpServlet {
 			description = "Your request has been accepted for Item : " + itemName;
 			agileReqImpl.approveRequest(itemId);
 			agileReqImpl.updateRequestStatus(requestId, AgileRequestStatus.APPROVED);
-			AgileMailTemplate.sendEmail(toEmail, approvalSubject, description);
+			MailFunctionality.sendEmail(toEmail, approvalSubject, description);
 
 			PrintWriter out = response.getWriter();
 			out.println("<html>");

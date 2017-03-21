@@ -3,8 +3,6 @@ package com.agile.bl.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 
 import com.agile.bl.dao.AgileItemDao;
 import com.agile.bl.dao.AgileItemDaoImplementation;
@@ -40,6 +40,7 @@ import com.agile.bl.model.RequestDetails;
 @WebServlet("/agilelogin")
 public class AgileLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static Logger log = Logger.getLogger(AgileLogin.class);
 
 	// singleton instance of the DB class..
 	AgileItemDao agileItemDao = new AgileItemDaoImplementation();
@@ -118,9 +119,10 @@ public class AgileLogin extends HttpServlet {
 			}
 
 		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, "Unexpected Login Error", e.getClass().getName());
+			log.error("Unable to proceed with request", e.getCause());
 		}
 	}
+	
 	
 	private void setUpPageValues(HttpServletRequest request, HttpServletResponse response){
 		List<AgileItems> allItems = new ArrayList<>();

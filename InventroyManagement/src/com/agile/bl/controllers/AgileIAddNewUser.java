@@ -1,8 +1,6 @@
 package com.agile.bl.controllers;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
+import com.agile.bl.dao.AgileUserDao;
 import com.agile.bl.dao.AgileUserDaoImplementation;
 import com.agile.bl.model.AgileUser;
 
@@ -26,7 +27,8 @@ import com.agile.bl.model.AgileUser;
 public class AgileIAddNewUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AgileUserDaoImplementation agileUserImpl = new AgileUserDaoImplementation();
+	AgileUserDao agileUserImpl = new AgileUserDaoImplementation();
+	private static Logger log = Logger.getLogger(AgileIAddNewUser.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -68,7 +70,7 @@ public class AgileIAddNewUser extends HttpServlet {
 				
 
 			} catch (Exception e) {
-				Logger.getGlobal().log(Level.SEVERE, "Unable to log user", e.getClass().getName());
+				log.error("Unable to add a new user", e.getCause());
 			}
 		}
 	}

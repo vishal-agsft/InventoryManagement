@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.agile.bl.dao.AgileItemDao;
 import com.agile.bl.dao.AgileItemDaoImplementation;
 import com.agile.bl.dao.AgileRequestDao;
@@ -25,6 +27,7 @@ import com.agile.bl.model.AgileRequest;
 @WebServlet("/newrequest")
 public class AgileMakeNewRequest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static Logger log = Logger.getLogger(AgileMakeNewRequest.class);
 
 	AgileRequestDao agileReqDao = new AgileRequestDaoImplementation();
 	AgileItemDao agileItemDao = new AgileItemDaoImplementation();
@@ -42,28 +45,26 @@ public class AgileMakeNewRequest extends HttpServlet {
 			Timestamp requestedDate = new Timestamp(System.currentTimeMillis());
 			int currentRequestedStatus = 2;
 
-			String description = "";
-
 			AgileRequest agileReq = new AgileRequest();
 			agileReq.setUserId(userId);
 			agileReq.setItemId(itemId);
 			agileReq.setRequestedDate(requestedDate);
 			agileReq.setRequestStatus(currentRequestedStatus);
-			agileReq.setDescription(description);
 
 			agileReqDao.addUserRequests(agileReq);
-			PrintWriter out=response.getWriter();
+			PrintWriter out = response.getWriter();
 			out.println("<html>");
 			out.println("<body>");
 			out.println("<h1>Requested</h1>");
 			out.println("</body>");
 			out.println("</html>");
-		/*	response.sendRedirect("agilelogin");*/
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("adminpanel.jsp");
-//			dispatcher.forward(request, response);
+			/* response.sendRedirect("agilelogin"); */
+			// RequestDispatcher dispatcher =
+			// request.getRequestDispatcher("adminpanel.jsp");
+			// dispatcher.forward(request, response);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("not able to make a new request", e.getCause());
 		}
 	}
 

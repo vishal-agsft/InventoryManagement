@@ -9,16 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.agile.bl.dao.AgileItemDaoImplementation;
 import com.agile.bl.model.AgileItems;
 
 /**
  * Servlet implementation class AgileEditItem
+ * 
+ * edits existing inventory
+ * 
  */
 @WebServlet("/edititem")
 public class AgileEditItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	private static Logger log = Logger.getLogger(AgileEditItem.class);
 	AgileItemDaoImplementation agileItemDao = new AgileItemDaoImplementation();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,11 +42,10 @@ public class AgileEditItem extends HttpServlet {
 			agileItems.setLastModifiedDate(currentTs);
 			
 			agileItemDao.updateItemDetails(agileItems, itemName);
-			System.out.println("redirecting to admin page");
 			response.sendRedirect("agilelogin");
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("Unable to edit current item", e.getCause());
 		}
 	}
 
