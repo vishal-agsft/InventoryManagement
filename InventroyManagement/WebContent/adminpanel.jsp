@@ -249,7 +249,7 @@ display:none;
 												<td>
 													<button data-toggle="modal" type="button"
 														class="btn btn-primary btn-xs"
-														onclick="setvals('${user.itemName}','${user.quantity}','${user.description}')"
+														onclick="setvals('${user.itemId}','${user.itemName}','${user.quantity}','${user.description}')"
 														data-title="Edit">Edit</button>
 												</td>
 											</tr>
@@ -369,6 +369,8 @@ display:none;
 												id="itemDescription" value="" placeholder=""
 												required="required" />
 										</div>
+										
+										<input type="hidden" id="itemId" name="itemId" value="">
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -608,7 +610,8 @@ display:none;
 	<jsp:include page="footer.jsp" />
 </body>
 <script type="text/javascript">
-	function setvals(itemName, itemQuantities, itemDescription) {
+	function setvals(itemId, itemName, itemQuantities, itemDescription) {
+		$("#itemId").val(itemId);
 		$("#itemName").val(itemName);
 		$("#itemQuantities").val(itemQuantities);
 		$("#itemDescription").val(itemDescription);
