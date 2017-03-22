@@ -2,30 +2,16 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
-<%@ page session="false"%>
+<%-- <%@ page session="false"%> --%>
 <%
-HttpSession httpSession =request.getSession();
-if(httpSession==null){
-	response.sendRedirect("login.jsp");
+String se;
+se=(String)session.getAttribute("isUserLoggedIn");
+
+if(se==null){
+	
+response.sendRedirect("login.jsp");
 }
-
-
-// Create cookies for first and last names.      
-Cookie mail = new Cookie("mail",
-			  request.getParameter("email"));
-Cookie pass = new Cookie("pass",
-			  request.getParameter("pwd"));
-
-// Set expiry date after 24 Hrs for both the cookies.
-mail.setMaxAge(60*60*24); 
-pass.setMaxAge(60*60*24); 
-
-// Add both the cookies in the response header.
-response.addCookie( mail );
-response.addCookie( pass );
 %>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,25 +21,98 @@ response.addCookie( pass );
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-	 <link rel="stylesheet" href="css/admin.css" type="text/css">
-	  <script type="text/javascript" src="js/admin.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+#add {
+	margin-top: -5%;
+}
+
+.divider {
+	width: 5px;
+	height: auto;
+	display: inline-block;
+}
+
+dialog {
+	width: 500px;
+	background: #e8e8e8;
+	border: 1px solid #dadada;
+	font-family: sans-serif;
+	padding: 5px 10px 20px 20px;
+}
+
+th, td {
+	padding: 20px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+html {
+	background: url(images/bg.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+tr:hover {
+	background-color: #f5f5f5
+}
+</style>
+<script type="text/javascript">
+	function Myconfirm(itemid, itemName, emailid, requestid) {
+		var i = itemid;
+		var j = itemName;
+		var k = emailid;
+		var l = requestid;
+		$.ajax({
+			type : "POST",
+			url : "approvereq",
+			data : {
+				itemid : i,
+				itemName : j,
+				emailid : k,
+				requestid : l
+			},
+			success : function(result) {
+				console.log(result);
+				alert("Request Approved!!")
+				document.location.href = 'agilelogin';
+				/* var successUrl = "adminpanel.jsp";
+				window.location.href = successUrl; */
+			}
+		});
+	}
+	function Mydecline(itemid, itemName, emailid, requestid) {
+		var i = itemid;
+		var j = itemName;
+		var k = emailid;
+		var l = requestid;
+		$.ajax({
+			type : "POST",
+			url : "declinereq",
+			data : {
+				itemid : i,
+				itemName : j,
+				emailid : k,
+				requestid : l
+			},
+			success : function(result) {
+				console.log(result);
+				alert("Request declined!!")
+				var successUrl = "adminpanel.jsp";
+				window.location.href = successUrl;
+			}
+		});
+	}
+</script>
 <title>Admin Panel</title>
 </head>
 <body>
 
 	<jsp:include page="Topview.jsp" />
 	<jsp:include page="logout.jsp" />
-	<!-- <div class="col-lg-12 loader" id="Loaderdiv">
-	<img src="/images/Pure-CSS-loading-spiner.jpg"></img>
-	
-	</div> -->
 	<div class="container col-lg-12 col-lg-offset-4" id="MainDiv">
-	<div id="loader"></div>
-
-<div style="display:none;" id="myDiv" class="animate-bottom">
- 
-</div>
 		<h3>Inventory Management</h3>
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#inventory">Inventory</a></li>
@@ -90,7 +149,7 @@ response.addCookie( pass );
 												<td>
 													<button data-toggle="modal" type="button"
 														class="btn btn-primary btn-xs"
-														onclick="setvals('${user.itemId}','${user.itemName}','${user.quantity}','${user.description}')"
+														onclick="setvals('${user.itemName}','${user.quantity}','${user.description}')"
 														data-title="Edit">Edit</button>
 												</td>
 											</tr>
@@ -210,8 +269,6 @@ response.addCookie( pass );
 												id="itemDescription" value="" placeholder=""
 												required="required" />
 										</div>
-										
-										<input type="hidden" id="itemId" name="itemId" value="">
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -248,10 +305,7 @@ response.addCookie( pass );
 												<td>${user.firstName}</td>
 												<td>${user.lastName}</td>
 												<td>${user.emailId}</td>
-											<%-- 	<td>	<button id="decline" type="button"
-														class="btn btn-danger btn-xs"
-														onclick="Mydecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
-														value="decline" name="requestbtn">Decline</button></td> --%>
+
 											</tr>
 										</c:forEach>
 									</tbody>
@@ -265,7 +319,7 @@ response.addCookie( pass );
 					</div>
 
 					<!--Add user Modal -->
-						<form action="insertuser" method="post">
+					<form action="insertuser" method="post">
 						<div id="usermodaladd" class="modal fade" tabindex="-1"
 							role="dialog">
 							<div class="modal-dialog modal-md">
@@ -277,7 +331,7 @@ response.addCookie( pass );
 										<h4 class="modal-title">Add Users</h4>
 									</div>
 									<div class="modal-body col-lg-12 col-sm-12 col-xs-12">
-									
+
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
@@ -302,35 +356,28 @@ response.addCookie( pass );
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Email </label>
+												class="pull-right clear-float-mobile">Email: </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="email" class="form-control"
 												style="float: right;" class="pull-left clear-float-mobile"
-												name="emailid" required="required" onblur="validateEmail(this)" />
+												name="emailid" required="required" />
 										</div>
 
 										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
 											<label
 												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Password </label>
+												class="pull-right clear-float-mobile">Password: </label>
 										</div>
 										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
 											<input type="password" class="form-control"
 												style="float: right;" class="pull-left clear-float-mobile"
 												name="password" required="required" />
 										</div>
-										<div class="col-md-4 col-sm-4 col-xs-12 form-group">
-											<label
-												style="font-size: 18px; font-weight: 300; float: right;"
-												class="pull-right clear-float-mobile">Is Admin </label>
+										<div class="checkbox">
+											<label><input type="checkbox" value="chk"
+												checked="checked" name="admincheck">Is Admin</label>
 										</div>
-										<div class="col-md-8 col-sm-8 col-xs-12 form-group">
-											<input type="checkbox"
-												style="float: left;" class="pull-left clear-float-mobile"
-												name="admincheck" value="chk" />
-										</div>
-										
 									</div>
 									<div class="modal-footer clear_both">
 										<button type="submit" class="btn btn-primary pull-left"
@@ -339,7 +386,6 @@ response.addCookie( pass );
 										<button type="button" class="btn btn-danger"
 											data-dismiss="modal">Cancel</button>
 									</div>
-									
 								</div>
 							</div>
 						</div>
@@ -376,12 +422,15 @@ response.addCookie( pass );
 												<td>${user.itemName}</td>
 												<td>
 													<button id="approve" class="btn btn-success btn-xs"
-														onclick="requestconfirm('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}','${user.totalQuantity}')"
+														onclick="Myconfirm('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
 														value="approve" name="requestbtn">Approve</button>
 													<div class="divider"></div>
+													<div id="approvediv" style="display: none;">
+														<p></p>
+													</div>
 													<button id="decline" type="button"
 														class="btn btn-danger btn-xs"
-														onclick="requestdecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
+														onclick="Mydecline('${user.itemId}','${user.itemName}','${user.emailId}','${user.requestId}')"
 														value="decline" name="requestbtn">Decline</button>
 												</td>
 											</tr>
@@ -395,67 +444,15 @@ response.addCookie( pass );
 			</div>
 
 		</div>
-		<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#ApproveDecline">Open Modal</button> -->
-
-<!-- Modal -->
-		<form action="agilelogin" method="post">
-			<div id="ApproveDecline" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Request status</h4>
-						</div>
-						<div class="modal-body">
-							<p id="approvep">Request approved Say ok.</p>
-							<!-- <p id="declinep">Request declined Say ok.</p> -->
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-info">OK</button>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">Close</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
-		<!-- Modal -->
-		<form action="agilelogin" method="post">
-			<div id="myDecline" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Request status</h4>
-						</div>
-						<div class="modal-body">
-
-							<p id="declinep">Request declined Say ok.</p>
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-info">OK</button>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">Close</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
 	</div>
 	<jsp:include page="footer.jsp" />
-	
 </body>
 <script type="text/javascript">
-
-$('#usermodaladd').on('shown.bs.modal', function() {
-    $(document).off('focusin.modal');
-});
+	function setvals(itemName, itemQuantities, itemDescription) {
+		$("#itemName").val(itemName);
+		$("#itemQuantities").val(itemQuantities);
+		$("#itemDescription").val(itemDescription);
+		$('#myModal2').modal('show');
+	}
 </script>
-
 </html>

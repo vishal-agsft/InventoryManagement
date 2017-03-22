@@ -4,18 +4,7 @@
 <%@page language="java" import="com.agile.bl.model.*"%>
 <%@ page isELIgnored="false"%>
 <%@ page session="false"%>
-
-
-
-<%
-HttpSession httpSession =request.getSession();
-if(httpSession==null){
-	response.sendRedirect("login.jsp");
-}
-
-
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <script
@@ -26,92 +15,9 @@ if(httpSession==null){
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Raleway:400,200'
 	rel='stylesheet' type='text/css'>
-
+<link rel="stylesheet" href="css/users.css" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style type="text/css">
-#dropDiv {
-	margin-top: 4%;
-	margin-left: -7%;
-	border-style: ridge;
-	border-color: #0000;
-}
-#loader {
-display:none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  margin: -75px 0 0 -75px;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Add animation to "page content" */
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
-}
-
-@-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
-}
-
-@keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
-}
-
-#myDiv {
-  display: none;
-  text-align: center;
-}
-</style>
-<script type="text/javascript">
-	/* Method Ajax call for Making New request by user as per item  */
-	function makeRequest(itemname) {
-		$("#loader").fadeIn();
-		var itemName = itemname;
-
-		$.ajax({
-			type : "POST",
-			url : "newrequest",
-			data : {
-				itemName : itemName
-			},
-			success : function(result) {
-				$("#loader").fadeOut();
-				$("#ApproveDecline").modal('show');
-				/* console.log(result) */
-				/* alert("requested")
-				var successUrl = "agilelogin";
-				window.location.href = successUrl;  */
-			}
-		});
-
-	}
-</script>
-<title>Insert title here</title>
+<title>Users Panel</title>
 </head>
 <body>
 	<jsp:include page="Topview.jsp" />
@@ -119,6 +25,7 @@ display:none;
 
 
 	<div class="col-lg-12">
+	
 	<div id="loader">
 	
 	</div>
@@ -127,7 +34,7 @@ display:none;
  
 </div>
 		<%
-		httpSession = request.getSession(false);
+			HttpSession httpSession = request.getSession(false);
 			String username = (String) httpSession.getAttribute("email");
 			String name = null;
 			String lastname = null;
@@ -142,7 +49,7 @@ display:none;
 			}
 		%>
 		<div class="container col-lg-12 pull-left col-offset-8">
-			<div class="container col-lg-6 ">
+			<div class="container col-lg-4 ">
 				<div class="row login_box">
 					<div class="col-md-12 col-xs-12" align="center">
 						<div class="line">
@@ -171,50 +78,119 @@ display:none;
 		<div class="container col-lg-12 " id="dropDiv">
 			<div class="col-lg-12">
 				<h3>You may Request here</h3>
-				<table class="table">
-					<thead class="thead-inverse">
-						<tr>
-							<th>Items</th>
-							<th>Quantity</th>
-							<th>Description</th>
-							<th>Request</th>
-							<!-- <th>Edit Items</th> -->
-						</tr>
-					</thead>
-					<tbody>
-						<%
-							List<AgileItems> itemlist = (List<AgileItems>) request.getAttribute("itemsList");
-							Iterator<AgileItems> itr2 = itemlist.iterator();
-							AgileItems obj = null;
-							while (itr2.hasNext()) {
-								obj = itr2.next();
-						%>
-						<tr>
+
+				<%-- <div class="col-lg-4">
+					<h3>Select items</h3>
+					<div class="dropdown" id="itemdropdownlist">
+						<button class="dropbtn" id="dropitem">Inventories</button>
+						<div class="dropdown-content">
+							<ul class="dropdown">
+
+								<%
+									List<AgileItems> itemlist = (List<AgileItems>) request.getAttribute("itemsList");
+									Iterator<AgileItems> itr2 = itemlist.iterator();
+									AgileItems obj = null;
+									while (itr2.hasNext()) {
+										obj = itr2.next();
+								%>
+
+
+
+								<%
+									while (itr2.hasNext()) {
+											obj = itr2.next();
+								%>
+								<li><a
+									href="javascript:itemSelected('<%=obj.getItemName()%>')"><i
+										class="icon-twitter icon-large"></i><%=obj.getItemName()%></a></li>
+
+							</ul>
+
+
 							<%
-								String iname = obj.getItemName();
+								}
+								}
 							%>
-							<td><%=obj.getItemName()%></td>
-							<td><%=obj.getQuantity()%></td>
-							<td><%=obj.getDescription()%></td>
-							<td>
-								<button type="button" class="btn btn-success btn-xs"
-									onclick="makeRequest('<%=iname%>')">Request Now</button>
-							</td>
-						</tr>
-						<%
-							}
-						%>
-					</tbody>
-				</table>
-				<%-- 
-				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-					<li role="presentation"><a role="menuitem" tabindex="-1"
-						href="#"><%=obj.getItemName()%></a></li>
-				</ul> --%>
+
+						</div>
+					</div>
+				</div> --%>
+				<div class="col-lg-4">
+					<h3>Select Inventory</h3>
+
+					<div class="form-group">
+						<div class="btn-group bootstrap-select"
+							style="width: 100%;">
+							<button type="button" class="btn dropdown-toggle btn-default form-control"
+								data-toggle="dropdown" role="button" title="Inventory"
+								 id="quantdrop" style="width: 100%;">
+								<span class="filter-option pull-left">Items</span>&nbsp;<span
+									class="bs-caret"><span class="caret"></span></span>
+							</button>
+
+							<div class="dropdown-menu open" role="combobox"
+								style="min-width: 0px;">
+								<ul class="dropdown-menu inner" role="listbox"
+									aria-expanded="false">
+									<%
+									List<AgileItems> itemlist = (List<AgileItems>) request.getAttribute("itemsList");
+										Iterator<AgileItems> itrquant = itemlist.iterator();
+										AgileItems quantobj = null;
+										while (itrquant.hasNext()) {
+											quantobj = itrquant.next();
+									%>
+
+									<li data-original-index="0" class="selected"><a
+										tabindex="0" class="" data-tokens="null" role="option"
+										aria-disabled="false"
+										href="javascript:itemSelected('<%=quantobj.getItemName()%>')"><span
+											class="text"><%=quantobj.getItemName() %></span><span class=""></span></a></li>
+									<!-- <li data-original-index="1"><a tabindex="0" class=""
+										data-tokens="null" role="option" aria-disabled="false"
+										aria-selected="false"><span class="text">Ketchup</span><span
+											class="glyphicon glyphicon-ok check-mark"></span></a></li>
+									<li data-original-index="2"><a tabindex="0" class=""
+										data-tokens="null" role="option" aria-disabled="false"
+										aria-selected="false"><span class="text">Relish</span><span
+											class="glyphicon glyphicon-ok check-mark"></span></a></li>
+									<li data-original-index="3"><a tabindex="0" class=""
+										data-tokens="null" role="option" aria-disabled="false"
+										aria-selected="false"><span class="text">All of the
+												above (and much, much more!)</span><span
+											class="glyphicon glyphicon-ok check-mark"></span></a></li> -->
+											
+									<%} %>
+								</ul>
+								
+							</div>
+
+						</div>
+						
+						</div>
+				</div>
+				<div class="col-lg-3" id="quantitydiv">
+					
+					<h3>Quantity</h3>
+					<div class="col-lg-4" id="display" style="display:none;"></div>
+					
+					<div class="col-lg-8" id="textdiv" style="display:none;">
+					<input type="text" class="form-control" name="quantitytext" required="required" id="quantreq"/>
+					</div>
+					</div>
+				<div class="col-lg-4" style="display: none" id="descriptiondiv">
+				
+				</div>
+				<div class="col-lg-1" style="display: none" id="requestbtn">
+				
+				
+				
+</div>
+
+
 			</div>
 
 		</div>
-		<!-- Modal -->
+			<!-- Modal -->
 <form action="agilelogin" method="post">
 <div id="ApproveDecline" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -226,7 +202,7 @@ display:none;
         <h4 class="modal-title">Request</h4>
       </div>
       <div class="modal-body">
-        <p>item Requested Say ok.</p>
+        <p>Item Requested</p>
         
       </div>
       <div class="modal-footer">
@@ -239,7 +215,8 @@ display:none;
 </div>
 </form>
 	</div>
-	
 	<jsp:include page="footer.jsp" />
+	
 </body>
+ <script type="text/javascript" src="js/users.js"></script>
 </html>
