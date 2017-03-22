@@ -29,7 +29,7 @@ public interface AgileRequestDao {
 	 * @return
 	 * 			The string value i.e. response message
 	 */
-	public String approveRequest(int itemId);
+	public String approveRequest(int itemId, int subtractQuantity);
 	
 	
 	/**
