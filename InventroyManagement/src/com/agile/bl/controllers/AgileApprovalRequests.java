@@ -42,6 +42,7 @@ public class AgileApprovalRequests extends HttpServlet {
 			String description = "";
 			String a = request.getParameter("itemid");
 			String b = request.getParameter("requestid");
+			int quantity = Integer.parseInt(request.getParameter("quant"));
 			
 			int i = Integer.parseInt(a);
 			int j = Integer.parseInt(b);
@@ -52,7 +53,7 @@ public class AgileApprovalRequests extends HttpServlet {
 			String itemName = request.getParameter("itemName");
 
 			description = "Your request has been accepted for Item : " + itemName;
-			agileReqImpl.approveRequest(itemId);
+			agileReqImpl.approveRequest(itemId, quantity);
 			agileReqImpl.updateRequestStatus(requestId, AgileRequestStatus.APPROVED);
 			MailFunctionality.sendEmail(toEmail, approvalSubject, description);
 

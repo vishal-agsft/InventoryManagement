@@ -28,7 +28,7 @@ public class AgileDropDownItemList extends HttpServlet {
 			throws ServletException, IOException {
 		AgileItemDao agileItems = new AgileItemDaoImplementation();
 		try {
-			String itemName = request.getParameter("");
+			String itemName = request.getParameter("itemName");
 			String description = null;
 
 			List<AgileItems> itemList = agileItems.getItemDetails();

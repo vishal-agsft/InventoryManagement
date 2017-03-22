@@ -27,7 +27,7 @@ public class AgileDropDownQuantities extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			AgileItemDao agileItems = new AgileItemDaoImplementation();
-			String itemName = request.getParameter("");
+			String itemName = request.getParameter("itemName");
 			int quantities = 0;
 
 			List<AgileItems> itemList = agileItems.getItemDetails();
@@ -52,7 +52,7 @@ public class AgileDropDownQuantities extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doPost(request, response);
+		doGet(request, response);
 	}
 
 }
