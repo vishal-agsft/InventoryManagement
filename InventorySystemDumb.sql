@@ -57,7 +57,7 @@ CREATE TABLE `Request` (
   `userid` int(11) NOT NULL,
   `itemid` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `description` varchar(100) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
   `requeststatus` tinyint(4) NOT NULL DEFAULT '2',
   `requestdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`requestid`),
@@ -116,4 +116,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-22 12:32:01
+-- Dump completed on 2017-03-22 13:00:01
