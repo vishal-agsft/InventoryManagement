@@ -19,14 +19,16 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 	@Override
 	public String addUserRequests(AgileRequest object) {
 		Connection connection = DBConnection.getInstance().getConnection();
-		String query = "insert into Request (userid, itemid, description, requestdate) values(?,?,?,?)";
+		String query = "insert into Request (userid, itemid, quantity, description, requestdate) values(?,?,?,?,?)";
 
 		try {
+			
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setInt(1, object.getUserId());
 			ps.setInt(2, object.getItemId());
-			ps.setString(3, object.getDescription());
-			ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			ps.setInt(3, object.getQuantity());
+			ps.setString(4, object.getDescription());
+			ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 			
 //			int rowCount = ps.executeUpdate();
 			
@@ -69,13 +71,14 @@ public class AgileRequestDaoImplementation implements AgileRequestDao {
 	}
 
 	@Override
-	public String approveRequest(int itemId) {
+	public String approveRequest(int itemId, int subtractQuantity) {
 		Connection connection = DBConnection.getInstance().getConnection();
-		String query = "UPDATE Items SET quantity = quantity - 1 WHERE itemid = ? and quantity > 0";
+		String query = "UPDATE Items SET quantity = quantity - ? WHERE itemid = ? and quantity > 0";
 		
 		try {
 			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setInt(1, itemId);
+			ps.setInt(1, subtractQuantity);
+			ps.setInt(2, itemId);
 			
 //			int rowCount = ps.executeUpdate();
 			
