@@ -21,7 +21,8 @@ public class DBConnection {
 	private void createConnection() {
 
 		final String DRIVER = "com.mysql.jdbc.Driver";
-		final String DBURL = "jdbc:mysql://localhost:3306/InventorySystem";
+		final String DBURL = "jdbc:mysql://192.168.50.84:3306/InventorySystem";
+//		final String DBURL = "jdbc:mysql://localhost:3306/InventorySystem";
 		final String USERNAME = "root";
 		final String PASSWORD = "root";
 
