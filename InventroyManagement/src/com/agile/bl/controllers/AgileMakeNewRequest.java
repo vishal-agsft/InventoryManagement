@@ -39,6 +39,7 @@ public class AgileMakeNewRequest extends HttpServlet {
 			HttpSession httpSession = request.getSession(false);
 			String emailId = (String) httpSession.getAttribute("email");
 			String itemName = request.getParameter("itemName");
+			int quantity = Integer.parseInt(request.getParameter("quant"));
 
 			int userId = agileUserDao.getUserId(emailId);
 			int itemId = agileItemDao.getItemId(itemName);
@@ -48,6 +49,7 @@ public class AgileMakeNewRequest extends HttpServlet {
 			AgileRequest agileReq = new AgileRequest();
 			agileReq.setUserId(userId);
 			agileReq.setItemId(itemId);
+			agileReq.setQuantity(quantity);
 			agileReq.setRequestedDate(requestedDate);
 			agileReq.setRequestStatus(currentRequestedStatus);
 
