@@ -1,3 +1,2 @@
 # InventoryManagement
 
-# Rupesh Bharuka
