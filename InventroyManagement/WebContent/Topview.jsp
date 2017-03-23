@@ -23,11 +23,12 @@ margin-left: -2%;
 }*/ */
 head.h1 { color:rgba; font-family: 'Trocchi', serif; font-size: 45px; font-weight: normal; line-height: 48px; margin: 0; }
  html { 
-  background: url(images/hd-website-backgrounds-20.jpg) no-repeat center center fixed; 
+ background-color: #f8f8f8!important;
+  /* background: url(images/hd-website-backgrounds-20.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
+  background-size: cover; */
 }
 </style>
 <title>Insert title here</title>
@@ -35,7 +36,8 @@ head.h1 { color:rgba; font-family: 'Trocchi', serif; font-size: 45px; font-weigh
 <body>
 <div class="col-lg-12">
 	<div class="col-lg-4">
-	<img src="images/agsft.png"/>	
+	<a href="#" id="agilelogin" onclick="document.location=this.id;return false;" >
+	<img src="images/agsft.png"/>	</a>
 	<!-- <hr id="hr"> -->
 	</div>
 	

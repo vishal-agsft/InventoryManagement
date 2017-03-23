@@ -1,8 +1,10 @@
 package com.agile.bl.controllers;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class MyListener implements ServletContextListener{  
 	HttpServletRequest request;
@@ -15,17 +17,16 @@ public class MyListener implements ServletContextListener{
 		/*httpSession = request.getSession(false);*/
 
 	}
-	public void contextDestroyed(ServletContextEvent arg0) {  
-		/*if(ag.httpSession!=null)
+	public void contextDestroyed(ServletContextEvent obj) {  
+	/*	 
+		HttpSession session =request.getSession();
+		if(ag.getInitParameter("HttpSession")!=null)
 		{
-			ag.httpSession.removeAttribute("t");
-			ag.httpSession.removeAttribute("email");
-			ag.httpSession.removeAttribute("password");
-			ag.httpSession.removeAttribute("str");
-			ag.httpSession.invalidate();
-		}*/
+			
+		session.invalidate();
+		}
 		  
 		System.out.println("project ended");
-
+}*/
 	}  
 }  

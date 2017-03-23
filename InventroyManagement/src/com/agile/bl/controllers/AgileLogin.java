@@ -62,6 +62,8 @@ public class AgileLogin extends HttpServlet {
 			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 			response.setHeader("Pragma", "no-cache");
 			response.setDateHeader("Expires", 0);
+
+			
 			
 			if (httpSession == null || httpSession.getAttribute("email") == null) {
 				System.out.println("Null Session Detected ... creating new one");
@@ -69,10 +71,8 @@ public class AgileLogin extends HttpServlet {
 				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 				response.setHeader("Pragma", "no-cache");
 				response.setDateHeader("Expires", 0);
-
 				String email = request.getParameter("email");
 				String password = request.getParameter("pwd");
-				
 				// checks for user existence
 				if (agileLoginDao.authenticateUser(email, password)) {
 					httpSession = request.getSession(true);
@@ -99,7 +99,8 @@ public class AgileLogin extends HttpServlet {
 				}
 			} else if (httpSession != null && httpSession.getAttribute("email") != null) {
 				System.out.println("session already exists");
-
+/*				String email1 = request.getParameter("email");
+				String password1 = request.getParameter("pwd");*/
 				String email = (String) httpSession.getAttribute("email");
 				String password = (String) httpSession.getAttribute("password");
 
@@ -132,7 +133,6 @@ public class AgileLogin extends HttpServlet {
 		allItems = agileItemDao.getItemDetails();
 		allPendingRequests = agileReqDao.getRequestDetails();
 		allUsers = agileUserDao.getUserDetails();
-
 		request.setAttribute("itemsList", allItems);
 		request.setAttribute("reqList", allPendingRequests);
 		request.setAttribute("usersList", allUsers);

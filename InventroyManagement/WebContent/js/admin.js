@@ -71,4 +71,21 @@ function validateEmail(emailField){
 	return true;
 
 }
-
+/*$(function(){
+$('#usertable').Pagination('#choose',{
+	isDisabled: false,
+		itemsCount: 4,
+		currentPage: 2
+}); 
+});*/
+$('#usermodaladd').on('shown.bs.modal', function() {
+   $(document).off('focusin.modal');
+});
+Pagination('#choose', {isDisabled: false,
+		itemsCount: 4,
+		currentPage: 2});
+/*$(document).ready(function() {
+    $('#usertable').DataTable( {
+        "pagingType": "full_numbers"
+    } );
+} );*/
